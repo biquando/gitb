@@ -59,6 +59,7 @@ char *read_head(char *buf, size_t len)
 {
 	int headfd = open(".git/HEAD", O_RDONLY);
 	size_t nbytes;
+	int i;
 
 	if (headfd < 0)
 		exit(errno);
@@ -71,8 +72,8 @@ char *read_head(char *buf, size_t len)
 	buf[nbytes] = '\0';
 
 	if (nbytes > 16 && strncmp(buf, "ref: refs/heads/", 16) == 0) {
-		int i;
-		for (i = 16; i <= nbytes && buf[i] != '\n'; i++)
+		/* Replace the \n with \0 */
+		for (i = 16; buf[i] != '\n' && i < nbytes; i++)
 			;
 		buf[i] = '\0';
 		buf += 16;
